@@ -5,7 +5,7 @@ const authenticate = require('../middlewares/authentication')
 
 router.post('/new/blog', authenticate, createBlog)
 
-router.get('/blogs', authenticate, getAllBlogs)
+router.get('/blogs', getAllBlogs)
 
 router.get('/blog/:id', authenticate, getBlog)
 

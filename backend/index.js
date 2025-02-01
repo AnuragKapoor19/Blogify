@@ -4,6 +4,15 @@ const mongodb = require('./db')
 const dotenv = require('dotenv')
 const cookieParser = require('cookie-parser')
 const cloudinary = require('cloudinary')
+const cors = require('cors')
+
+app.use(cookieParser())
+
+//cors config
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}))
 
 //configuring env
 dotenv.config()
@@ -14,8 +23,6 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
-
-app.use(cookieParser())
 
 app.use(express.json())
 

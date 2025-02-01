@@ -49,7 +49,8 @@ const getUser = async (req, res) => {
         const user = await User.findOne({ email: req.body.email })
 
         if (!user) {
-            return res.status(404).json({
+            return res.status(400).json({
+                success: false,
                 message: "Email not found"
             })
         }
@@ -57,7 +58,8 @@ const getUser = async (req, res) => {
         const cmpPassword = await bcrypt.compare(req.body.password, user.password)
 
         if (!cmpPassword) {
-            return res.status(404).json({
+            return res.status(400).json({
+                success: false,
                 message: "Incorrect Password!"
             })
         }
@@ -65,7 +67,7 @@ const getUser = async (req, res) => {
         const token = await generateToken({ id: user._id })
 
         res.status(200)
-            .cookie('token', token, { expires: new Date(Date.now() + 604800000), httpOnly: true })
+            .cookie('token', token, { expires: new Date(Date.now() + 604800000), httpOnly: true, sameSite: 'None', secure: true })
             .json({
                 success: true,
                 message: "Logged in successfully"
