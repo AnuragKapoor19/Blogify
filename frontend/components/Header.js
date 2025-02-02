@@ -56,15 +56,29 @@ export default function Header() {
               {authenticated
                 ?
                 <>
-                  <div className='d-flex align-items-center text-light'>
+                  <div className='profile d-flex align-items-center text-light' data-bs-toggle="modal" data-bs-target="#exampleModal">
                     <img src={user.avatar.url} alt='avatar' height={50} width={50} style={{ border: '2px solid white', borderRadius: '50%' }} />
                     <div className='d-flex flex-column'>
                       <span className='fs-5 fst-italic'>Hi,</span>
-                      <h4>{String(user.name).split(' ')[0].charAt(0).toUpperCase()+ String(user.name).split(' ')[0].slice(1)}</h4>
+                      <h4>{String(user.name).split(' ')[0].charAt(0).toUpperCase() + String(user.name).split(' ')[0].slice(1)}</h4>
                     </div>
                   </div>
 
-                  <div className='btn btn-danger ms-3 fw-bold' onClick={handleLogout}>Log out</div>
+                  <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-sm">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h1 className="modal-title fs-5" id="exampleModalLabel">Blogify</h1>
+                          <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body d-flex flex-column align-items-center">
+                          <Link className='text-decoration-none my-3 text-dark' href={'/'}>My Profile</Link>
+                          <Link className='text-decoration-none my-3 text-dark' href={'/'}>Dashboard</Link>
+                          <div className='btn btn-danger fw-bold w-50 p-1 my-3' onClick={handleLogout}>Log out</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </>
                 :
                 <div className='btns'>
