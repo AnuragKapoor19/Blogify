@@ -2,14 +2,15 @@ const express = require('express')
 const { createBlog, getAllBlogs, getBlog, deleteBlog, addComment, addLike, removeLike } = require('../controllers/blogControllers')
 const router = express.Router()
 const authenticate = require('../middlewares/authentication')
+const authorize = require('../middlewares/authorization')
 
-router.post('/new/blog', authenticate, createBlog)
+router.post('/new/blog', authenticate, authorize('author'), createBlog)
 
 router.get('/blogs', getAllBlogs)
 
 router.get('/blog/:id', authenticate, getBlog)
 
-router.delete('/blog/:id', authenticate, deleteBlog)
+router.delete('/blog/:id', authenticate, authorize('author'), deleteBlog)
 
 router.put('/blog/:id', authenticate, addComment)
 

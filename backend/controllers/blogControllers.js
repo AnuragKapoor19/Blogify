@@ -1,15 +1,20 @@
 const Blog = require('../models/blogModel')
+const cloudinary = require('cloudinary')
 
 const createBlog = async (req, res) => {
     try {
         const { title, content, image, category } = req.body
 
+        const result = await cloudinary.v2.uploader.upload(image, {
+            folder: 'blogapp'
+        })
+
         const blog = await Blog.create({
             title,
             content,
             image: {
-                public_id: '1',
-                url: image
+                public_id: result.public_id,
+                url: result.secure_url
             },
             author: req.user._id,
             category
@@ -70,7 +75,7 @@ const getBlog = async (req, res) => {
 
 const deleteBlog = async (req, res) => {
     try {
-        const blog = await Blog.findByIdAndDelete(req.params.id)
+        const blog = await Blog.findById(req.params.id)
 
         if (!blog) {
             return res.status(400).json({
@@ -78,6 +83,10 @@ const deleteBlog = async (req, res) => {
                 message: "No Blog Found"
             })
         }
+
+        await cloudinary.v2.uploader.destroy(blog.image.public_id)
+
+        await Blog.findByIdAndDelete(req.params.id)
 
         res.status(200).json({
             success: true
