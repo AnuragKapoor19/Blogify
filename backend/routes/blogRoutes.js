@@ -8,7 +8,7 @@ router.post('/new/blog', authenticate, authorize('author'), createBlog)
 
 router.get('/blogs', getAllBlogs)
 
-router.get('/blog/:id', authenticate, getBlog)
+router.get('/blog/:id', getBlog)
 
 router.delete('/blog/:id', authenticate, authorize('author'), deleteBlog)
 

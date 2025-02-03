@@ -64,7 +64,7 @@ export default function Header() {
                     </div>
                   </div>
 
-                  <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog modal-sm">
                       <div className="modal-content">
                         <div className="modal-header">
