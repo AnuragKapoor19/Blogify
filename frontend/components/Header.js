@@ -3,10 +3,11 @@
 import { useContextState } from '@/contextApi'
 import axios from 'axios';
 import Link from 'next/link'
-import React from 'react'
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const { user, authenticated, setUser, setAuthenticated } = useContextState()
+  const router = useRouter();
 
   const handleLogout = async () => {
     const { data } = await axios.get('http://localhost:5000/api/v1/logout/user', { withCredentials: true })
@@ -17,6 +18,7 @@ export default function Header() {
 
     setUser('')
     setAuthenticated(false)
+    router.push('/')
   }
 
   return (
@@ -72,9 +74,9 @@ export default function Header() {
                           <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body d-flex flex-column align-items-center">
-                          <Link className='text-decoration-none my-3 text-dark' href={'/'}>My Profile</Link>
-                          <Link className='text-decoration-none my-3 text-dark' href={'/'}>Dashboard</Link>
-                          <div className='btn btn-danger fw-bold w-50 p-1 my-3' data-bs-dismiss="modal" onClick={handleLogout}>Log out</div>
+                          <div className='my-3 text-dark' data-bs-dismiss="modal" style={{cursor: "pointer"}} onClick={()=> router.push('/profile')}>My Profile</div>
+                          <div className='my-3 text-dark' data-bs-dismiss="modal" style={{cursor: "pointer"}} onClick={()=> router.push('/dashboard')}>Dashboard</div>
+                          <div className='btn btn-danger fw-bold w-50 p-1 my-3' onClick={handleLogout} data-bs-dismiss="modal">Log out</div>
                         </div>
                       </div>
                     </div>
