@@ -5,12 +5,12 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { FcLike, FcLikePlaceholder } from "react-icons/fc";
 
 export default function BlogPage({ params }) {
     const [blog, setBlog] = useState();
     const [loading, setLoading] = useState(true);
-    const [likes, setLikes] = useState(0);
-    const [comments, setComments] = useState([]);
+    const [liked, setliked] = useState(false)
     const [newComment, setNewComment] = useState('');
 
     const getBlog = async () => {
@@ -30,14 +30,38 @@ export default function BlogPage({ params }) {
         getBlog();
     }, []);
 
-    const handleLike = () => {
-        setLikes(likes + 1);
+    const handleLike = async () => {
+        if (liked === false) {
+            await setliked(true);
+            try {
+                const { data } = await axios.put(`http://localhost:5000/api/v1/blog/like/${blog._id}`, {}, { withCredentials: true, headers: { "Content-Type": "application/json" } })
+
+                if (!data.success) {
+                    return console.log(data.message);
+                }
+
+                getBlog();
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+        else {
+            alert("You have already liked this blog!")
+        }
     };
 
-    const handleAddComment = () => {
-        if (newComment.trim()) {
-            setComments([...comments, newComment]);
-            setNewComment('');
+    const handleAddComment = async () => {
+        try {
+            const { data } = await axios.put(`http://localhost:5000/api/v1/blog/${blog._id}`, { comment: newComment }, { withCredentials: true, headers: { "Content-Type": "application/json" } })
+
+            if (!data.success) {
+                return console.log(data.message);
+            }
+
+            alert(data.message)
+            getBlog();
+        } catch (error) {
+            console.log(error.message);
         }
     };
 
@@ -68,29 +92,34 @@ export default function BlogPage({ params }) {
                                     <h5 className='bg-light p-2 fw-bold rounded' style={{ position: 'absolute', top: '1%', left: '1%' }}>{blog.category}</h5>
                                 </div>
                                 <p className="lead">{blog.content}</p>
-                                
+
                                 {/* Like Button */}
-                                <button className="btn btn-primary" onClick={handleLike}>
-                                    Like ({likes})
-                                </button>
-                                
+                                <div onClick={handleLike} className='d-flex align-items-center'>
+                                    {liked
+                                        ? <FcLike size={35} style={{ cursor: 'pointer' }} />
+                                        : <FcLikePlaceholder size={35} style={{ cursor: 'pointer' }} />
+                                    }
+                                    ({blog.likes})
+                                </div>
+
                                 {/* Comment Section */}
                                 <div className="mt-4">
                                     <h4>Comments</h4>
                                     <ul className="list-group mb-3">
-                                        {comments.map((comment, index) => (
-                                            <li key={index} className="list-group-item">
-                                                {comment}
+                                        {blog.comments.map((comment, index) => (
+                                            <li key={index} className="list-group-item d-flex align-items-center">
+                                                <img className='rounded-circle' src={comment.user.avatar.url} alt='avatar' height={45} width={45} />
+                                                <span className='fw-bold ms-3 fs-5'>{comment.comment}</span>
                                             </li>
                                         ))}
                                     </ul>
                                     <div className="input-group">
-                                        <input 
-                                            type="text" 
-                                            className="form-control" 
-                                            placeholder="Write a comment..." 
-                                            value={newComment} 
-                                            onChange={(e) => setNewComment(e.target.value)} 
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Write a comment..."
+                                            value={newComment}
+                                            onChange={(e) => setNewComment(e.target.value)}
                                         />
                                         <button className="btn btn-success" onClick={handleAddComment}>
                                             Add Comment

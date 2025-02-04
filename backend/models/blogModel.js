@@ -33,9 +33,6 @@ const blogSchema = new Schema({
     likes: {
         type: Number
     },
-    unlikes: {
-        type: Number
-    },
     comments: [
         {
             user: {
