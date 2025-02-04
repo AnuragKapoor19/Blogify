@@ -74,7 +74,7 @@ export default function Header() {
                         <div className="modal-body d-flex flex-column align-items-center">
                           <Link className='text-decoration-none my-3 text-dark' href={'/'}>My Profile</Link>
                           <Link className='text-decoration-none my-3 text-dark' href={'/'}>Dashboard</Link>
-                          <div className='btn btn-danger fw-bold w-50 p-1 my-3' onClick={handleLogout}>Log out</div>
+                          <div className='btn btn-danger fw-bold w-50 p-1 my-3' data-bs-dismiss="modal" onClick={handleLogout}>Log out</div>
                         </div>
                       </div>
                     </div>

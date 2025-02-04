@@ -39,8 +39,15 @@ export default function BlogPage({ params }) {
                         <div className="col-lg-10">
                             <div className="card p-5 shadow-lg border-0">
                                 <h1 className="mb-4 text-center">{blog.title}</h1>
-                                <p className="text-muted text-center">By {blog.author.name} | {blog.createdAt}</p>
-                                <img src={blog.image.url} alt="Blog banner" className="img-fluid rounded mb-4" style={{maxHeight:'600px'}}/>
+                                <p className="text-muted text-center">By {blog.author.name} | {new Date(blog.createdAt).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                    hour: "numeric",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                })}</p>
+                                <img src={blog.image.url} alt="Blog banner" className="img-fluid rounded mb-4" style={{ maxHeight: '600px' }} />
                                 <p className="lead">{blog.content}</p>
                             </div>
                         </div>

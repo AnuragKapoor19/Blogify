@@ -38,7 +38,8 @@ const createUser = async (req, res) => {
 
     } catch (error) {
         res.status(400).json({
-            message: error.message
+            success: false,
+            message: error
         })
     }
 }

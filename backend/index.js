@@ -5,8 +5,11 @@ const dotenv = require('dotenv')
 const cookieParser = require('cookie-parser')
 const cloudinary = require('cloudinary')
 const cors = require('cors')
+const bodyParser = require('body-parser')
 
 app.use(cookieParser())
+
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }))
 
 //cors config
 app.use(cors({
