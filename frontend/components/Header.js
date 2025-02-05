@@ -74,8 +74,8 @@ export default function Header() {
                           <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body d-flex flex-column align-items-center">
-                          <div className='my-3 text-dark' data-bs-dismiss="modal" style={{cursor: "pointer"}} onClick={()=> router.push('/profile')}>My Profile</div>
-                          <div className='my-3 text-dark' data-bs-dismiss="modal" style={{cursor: "pointer"}} onClick={()=> router.push('/dashboard')}>Dashboard</div>
+                          <div className='my-3 text-dark' data-bs-dismiss="modal" style={{ cursor: "pointer" }} onClick={() => router.push('/profile')}>My Profile</div>
+                          {user.role === 'author' && <div className='my-3 text-dark' data-bs-dismiss="modal" style={{ cursor: "pointer" }} onClick={() => router.push('/dashboard')}>Dashboard</div>}
                           <div className='btn btn-danger fw-bold w-50 p-1 my-3' onClick={handleLogout} data-bs-dismiss="modal">Log out</div>
                         </div>
                       </div>
