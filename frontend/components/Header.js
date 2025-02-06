@@ -4,10 +4,12 @@ import { useContextState } from '@/contextApi'
 import axios from 'axios';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function Header() {
-  const { user, authenticated, setUser, setAuthenticated } = useContextState()
+  const { user, authenticated, setUser, setAuthenticated, setsearch } = useContextState()
   const router = useRouter();
+  const [keyword, setkeyword] = useState('')
 
   const handleLogout = async () => {
     const { data } = await axios.get('http://localhost:5000/api/v1/logout/user', { withCredentials: true })
@@ -36,24 +38,24 @@ export default function Header() {
                   <Link href='/' className="nav-link active" aria-current="page">Home</Link>
                 </li>
                 <li className="nav-item">
-                  <Link href='/technology' className="nav-link">Technology</Link>
+                  <Link href='/Technology' className="nav-link">Technology</Link>
                 </li>
                 <li className="nav-item">
-                  <Link href='/productivity' className="nav-link">Productivity</Link>
+                  <Link href='/Productivity' className="nav-link">Productivity</Link>
                 </li>
                 <li className="nav-item">
-                  <Link href='/finance' className="nav-link">Finance</Link>
+                  <Link href='/Finance' className="nav-link">Finance</Link>
                 </li>
                 <li className="nav-item">
-                  <Link href='/health' className="nav-link">Health</Link>
+                  <Link href='/Health' className="nav-link">Health</Link>
                 </li>
                 <li className="nav-item">
-                  <Link href='/travel' className="nav-link">Travel</Link>
+                  <Link href='/Travel' className="nav-link">Travel</Link>
                 </li>
               </ul>
               <form className="d-flex me-auto">
-                <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                <button className="btn btn-outline-success" type="submit">Search</button>
+                <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" value={keyword} onChange={(e) => setkeyword(e.target.value)} />
+                <button className="btn btn-outline-success" type="submit" onClick={(e) => { e.preventDefault(); setsearch(keyword) }}>Search</button>
               </form>
               {authenticated
                 ?

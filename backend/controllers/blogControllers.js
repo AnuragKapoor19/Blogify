@@ -34,7 +34,29 @@ const createBlog = async (req, res) => {
 
 const getAllBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find()
+        let { search, category } = req.query;
+        let filter = {}
+
+        if (search) {
+            filter.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { content: { $regex: search, $options: 'i' } }
+            ]
+        }
+
+        if (category) {
+            filter.category = category
+        }
+
+
+        const blogs = await Blog.find(filter)
+
+        if (blogs.length <= 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Blog not found'
+            })
+        }
 
         res.status(200).json({
             success: true,

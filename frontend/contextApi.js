@@ -6,10 +6,11 @@ const Context = createContext()
 
 export default function ContextProvider({ children }) {
     const [user, setUser] = useState('');
-    const [authenticated, setAuthenticated] = useState(false)
+    const [authenticated, setAuthenticated] = useState(false);
+    const [search, setsearch] = useState('')
 
     return (
-        <Context.Provider value={{ user, setUser, authenticated, setAuthenticated }}>
+        <Context.Provider value={{ user, setUser, authenticated, setAuthenticated, search, setsearch }}>
             {children}
         </Context.Provider>
     )

@@ -10,11 +10,13 @@ import { useEffect, useState } from "react"
 function Home() {
   const [blogs, setblogs] = useState([]);
   const [loading, setloading] = useState(true);
-  const { setUser, setAuthenticated, user, authenticated } = useContextState();
+  const { setUser, setAuthenticated, search } = useContextState();
 
   const getBlogs = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/v1/blogs')
+      const { data } = await axios.get(`http://localhost:5000/api/v1/blogs`, {
+        params: { search }
+      })
 
       if (!data.success) {
         console.log('Please try again later!')
@@ -46,8 +48,7 @@ function Home() {
 
   useEffect(() => {
     getBlogs();
-    getUser();
-  }, [])
+  }, [search])
 
   useEffect(() => {
     getUser();

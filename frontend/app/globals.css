@@ -6,6 +6,10 @@
     background-repeat: no-repeat;
 }
 
+.blogs-container{
+    min-height: 50vh;
+}
+
 .c-container .card {
     /* width: 23.6%;
     margin: 10px; */
