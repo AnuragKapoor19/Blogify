@@ -7,6 +7,8 @@ import axios from "axios";
 
 export default function AuthorDashboard() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [blogs, setblogs] = useState([])
+  const [loading, setloading] = useState(true)
   const { authenticated } = useContextState();
   const [formData, setformData] = useState({ title: '', content: '', category: '' })
   const [image, setimage] = useState('https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg')
@@ -41,6 +43,21 @@ export default function AuthorDashboard() {
     }
   }
 
+  const getAuthorBlogs = async () => {
+    try {
+      const { data } = await axios.get('http://localhost:5000/api/v1/author/blogs', { withCredentials: true })
+
+      if (!data.success) {
+        console.log(data.message);
+      }
+
+      setblogs(data.blogs)
+      setloading(false)
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   const author = {
     name: "John Doe",
     totalPosts: 42,
@@ -67,11 +84,11 @@ export default function AuthorDashboard() {
             >
               <h2 className="mb-4">Dashboard</h2>
               <ul className="nav flex-column">
-                <li className="nav-item">
-                  <a className="nav-link text-white" href="#">📜 Posts</a>
+                <li className="nav-item" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+                  <a className="nav-link text-white" onClick={getAuthorBlogs} style={{ cursor: 'pointer' }}>📜 Blogs</a>
                 </li>
                 <li className="nav-item" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                  <div className="nav-link text-white" style={{ cursor: 'pointer' }}>📝 New Post</div>
+                  <div className="nav-link text-white" style={{ cursor: 'pointer' }}>📝 New Blog</div>
                 </li>
                 <li className="nav-item">
                   <a className="nav-link text-white" href="#">💬 Comments</a>
@@ -79,11 +96,58 @@ export default function AuthorDashboard() {
               </ul>
             </div>
 
+            <div className="modal fade" id="exampleModal1" tabIndex="-1" aria-labelledby="exampleModal1Label" aria-hidden="true">
+              <div className="modal-dialog modal-fullscreen">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h1 className="modal-title fs-5 fw-bolder" id="exampleModal1Label">Blogs</h1>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div className="modal-body">
+                    <div className="container mt-5">
+                      <div className="card p-4 shadow-sm">
+                        <h2 className="mb-4">Your Blogs</h2>
+                        <div className="container mt-4">
+                          <div className="row">
+                            {loading
+                              ? <h3>Loading...</h3>
+                              :
+                              blogs.map((blog) => (
+                                <div className="col-md-4 mb-4" key={blog._id}>
+                                  <div className="card">
+                                    <img src={blog.image.url} className="card-img-top" alt='blog' style={{ minHeight: '200px', maxHeight: '200px' }} />
+                                    <div className="card-body">
+                                      <h5 className="card-title">{blog.title}</h5>
+                                      <div className="d-flex justify-content-between">
+                                        <button className="btn btn-warning btn-sm">
+                                          Edit
+                                        </button>
+                                        <button className="btn btn-danger btn-sm" >
+                                          Delete
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div className="modal-dialog modal-fullscreen">
                 <div className="modal-content">
                   <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <h1 className="modal-title fs-5 fw-bolder" id="exampleModalLabel">Add Blog</h1>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div className="modal-body">

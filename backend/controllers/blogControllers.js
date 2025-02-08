@@ -48,8 +48,15 @@ const getAllBlogs = async (req, res) => {
             filter.category = category
         }
 
+        let blogs;
 
-        const blogs = await Blog.find(filter)
+        if (!search && !category) {
+            const totalCount = await Blog.countDocuments();
+            blogs = await Blog.aggregate([{ $sample: { size: totalCount } }]);
+        }
+        else {
+            blogs = await Blog.find(filter)
+        }
 
         if (blogs.length <= 0) {
             return res.status(404).json({
@@ -85,33 +92,6 @@ const getBlog = async (req, res) => {
         res.status(200).json({
             success: true,
             blog
-        })
-
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message
-        })
-    }
-}
-
-const deleteBlog = async (req, res) => {
-    try {
-        const blog = await Blog.findById(req.params.id)
-
-        if (!blog) {
-            return res.status(400).json({
-                success: false,
-                message: "No Blog Found"
-            })
-        }
-
-        await cloudinary.v2.uploader.destroy(blog.image.public_id)
-
-        await Blog.findByIdAndDelete(req.params.id)
-
-        res.status(200).json({
-            success: true
         })
 
     } catch (error) {
@@ -215,4 +195,56 @@ const removeLike = async (req, res) => {
     }
 }
 
-module.exports = { createBlog, getAllBlogs, getBlog, deleteBlog, addComment, addLike, removeLike }
+//Author Controllers
+const deleteBlog = async (req, res) => {
+    try {
+        const blog = await Blog.findById(req.params.id)
+
+        if (!blog) {
+            return res.status(400).json({
+                success: false,
+                message: "No Blog Found"
+            })
+        }
+
+        await cloudinary.v2.uploader.destroy(blog.image.public_id)
+
+        await Blog.findByIdAndDelete(req.params.id)
+
+        res.status(200).json({
+            success: true
+        })
+
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+const getAuthorBlogs = async (req, res) => {
+    try {
+        const blogs = await Blog.find({ author: req.user._id })
+
+        if (!blogs) {
+            return res.status(404).json({
+                success: false,
+                message: "No Blog Found"
+            })
+        }
+
+        res.status(200).json({
+            success: true,
+            blogs
+        })
+
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+module.exports = { createBlog, getAllBlogs, getBlog, deleteBlog, addComment, addLike, removeLike, getAuthorBlogs }
