@@ -1,5 +1,5 @@
 const express = require('express')
-const { createBlog, getAllBlogs, getBlog, deleteBlog, addComment, addLike, removeLike, getAuthorBlogs } = require('../controllers/blogControllers')
+const { createBlog, getAllBlogs, getBlog, deleteBlog, addComment, addLike, removeLike, getAuthorBlogs, updateBlog } = require('../controllers/blogControllers')
 const router = express.Router()
 const authenticate = require('../middlewares/authentication')
 const authorize = require('../middlewares/authorization')
@@ -19,5 +19,7 @@ router.put('/blog/like/:id', authenticate, addLike)
 router.put('/blog/unlike/:id', authenticate, removeLike)
 
 router.get('/author/blogs', authenticate, authorize('author'), getAuthorBlogs)
+
+router.put('/author/blog/:id', authenticate, authorize('author'), updateBlog)
 
 module.exports = router

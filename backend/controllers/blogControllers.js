@@ -247,4 +247,61 @@ const getAuthorBlogs = async (req, res) => {
     }
 }
 
-module.exports = { createBlog, getAllBlogs, getBlog, deleteBlog, addComment, addLike, removeLike, getAuthorBlogs }
+const updateBlog = async (req, res) => {
+    try {
+        const { title, content, image, category } = req.body;
+
+        const blog = await Blog.findById(req.params.id)
+
+        if (!blog) {
+            return res.status(404).json({
+                success: false,
+                message: "No Blog Found!"
+            })
+        }
+
+        if (!blog.author === req.user._id) {
+            return res.status(403).json({
+                success: false,
+                message: `Your are not authorized!`
+            })
+        }
+
+        if (image) {
+            await cloudinary.v2.uploader.destroy(blog.image.public_id)
+
+            const result = await cloudinary.v2.uploader.upload(image)
+
+            let imageLink = { public_id: result.public_id, url: result.secure_url }
+
+            blog.image = imageLink
+        }
+
+        if (title) {
+            blog.title = title
+        }
+
+        if (content) {
+            blog.content = content
+        }
+
+        if (category) {
+            blog.category = category
+        }
+
+        await blog.save()
+
+        res.status(200).json({
+            success: true,
+            message: "Blog Updated Successfully!"
+        })
+
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+module.exports = { createBlog, getAllBlogs, getBlog, deleteBlog, addComment, addLike, removeLike, getAuthorBlogs, updateBlog }

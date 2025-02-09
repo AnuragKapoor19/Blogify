@@ -1,15 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useContextState } from "@/contextApi";
-import { FaPencilAlt } from "react-icons/fa";
 import axios from "axios";
 
 export default function AuthorDashboard() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [blogs, setblogs] = useState([])
   const [loading, setloading] = useState(true)
-  const { authenticated } = useContextState();
+  const [isDeleted, setisDeleted] = useState(false)
+  const { authenticated, user } = useContextState();
   const [formData, setformData] = useState({ title: '', content: '', category: '' })
   const [image, setimage] = useState('https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg')
 
@@ -57,6 +57,25 @@ export default function AuthorDashboard() {
       console.log(error.message);
     }
   }
+
+  const handleDelete = async (id) => {
+    try {
+      setisDeleted(false)
+      const { data } = await axios.delete(`http://localhost:5000/api/v1/blog/${id}`, { withCredentials: true })
+
+      if (!data.success) {
+        console.log(data.message)
+      }
+
+      setisDeleted(true)
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  useEffect(() => {
+    getAuthorBlogs();
+  }, [isDeleted])
 
   const author = {
     name: "John Doe",
@@ -115,14 +134,14 @@ export default function AuthorDashboard() {
                               blogs.map((blog) => (
                                 <div className="col-md-4 mb-4" key={blog._id}>
                                   <div className="card">
-                                    <img src={blog.image.url} className="card-img-top" alt='blog' style={{ minHeight: '200px', maxHeight: '200px' }} />
+                                    <img src={blog.image.url} className="card-img-top" alt='blog' style={{ minHeight: '250px', maxHeight: '250px' }} />
                                     <div className="card-body">
                                       <h5 className="card-title">{blog.title}</h5>
                                       <div className="d-flex justify-content-between">
-                                        <button className="btn btn-warning btn-sm">
+                                        <button className="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal2">
                                           Edit
                                         </button>
-                                        <button className="btn btn-danger btn-sm" >
+                                        <button className="btn btn-danger" onClick={() => handleDelete(blog._id)}>
                                           Delete
                                         </button>
                                       </div>
@@ -134,6 +153,54 @@ export default function AuthorDashboard() {
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal fade" id="exampleModal2" tabIndex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+              <div className="modal-dialog modal-dialog-scrollable">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h1 className="modal-title fs-5" id="exampleModalLabel2">Edit Blog</h1>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div className="modal-body">
+                    <div className="container">
+                      <form className="shadow p-4 rounded bg-light">
+                        <div className="mb-3">
+                          <label className="form-label">Blog Image</label>
+                          <input type="file" className="form-control" accept="image/*" />
+                          {image && <img src='https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg' alt="Preview" className="img-fluid mt-2 w-100" style={{ maxHeight: "200px" }} />}
+                        </div>
+
+                        <div className="mb-3">
+                          <label className="form-label">Title</label>
+                          <input type="text" className="form-control" />
+                        </div>
+
+                        <div className="mb-3">
+                          <label className="form-label">Content</label>
+                          <textarea className="form-control" rows="5"></textarea>
+                        </div>
+
+                        <div className="mb-3">
+                          <label className="form-label">Category</label>
+                          <select className="form-select">
+                            <option value="Technology">Technology</option>
+                            <option value="Productivity">Productivity</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Health">Health</option>
+                            <option value="Travel">Travel</option>
+                          </select>
+                        </div>
+
+                        <button type="submit" className="btn btn-primary w-100">Update</button>
+                      </form>
                     </div>
                   </div>
                   <div className="modal-footer">
@@ -210,12 +277,12 @@ export default function AuthorDashboard() {
               </button>
 
               {/* Welcome Section */}
-              <h1 className="mb-4">Welcome, {author.name} 👋</h1>
+              <h1 className="mb-4">Welcome, {user.name} 👋</h1>
 
               {/* Stats Section */}
               <div className="row g-3">
                 {[
-                  { title: "Total Posts", value: author.totalPosts },
+                  { title: "Total Posts", value: blogs.length },
                   { title: "Total Likes", value: author.totalLikes },
                   { title: "Total Comments", value: author.totalComments },
                 ].map((stat, index) => (
