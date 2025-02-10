@@ -3,15 +3,19 @@ import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useContextState } from "@/contextApi";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function AuthorDashboard() {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [blogs, setblogs] = useState([])
+  const [totalLikes, settotalLikes] = useState(0)
+  const [totalComments, settotalComments] = useState(0)
   const [loading, setloading] = useState(true)
   const [isDeleted, setisDeleted] = useState(false)
   const { authenticated, user } = useContextState();
   const [formData, setformData] = useState({ title: '', content: '', category: '' })
   const [image, setimage] = useState('https://t4.ftcdn.net/jpg/04/81/13/43/360_F_481134373_0W4kg2yKeBRHNEklk4F9UXtGHdub3tYk.jpg')
+  const router = useRouter()
 
   const handleChange = (e) => {
     setformData({ ...formData, [e.target.name]: e.target.value })
@@ -51,7 +55,13 @@ export default function AuthorDashboard() {
         console.log(data.message);
       }
 
-      setblogs(data.blogs)
+      await setblogs(data.blogs)
+
+      await blogs.map(blog => {
+        settotalLikes(Number(blog.likes + totalLikes))
+        settotalComments(Number(blog.comments.length + totalComments))
+      })
+
       setloading(false)
     } catch (error) {
       console.log(error.message);
@@ -104,7 +114,7 @@ export default function AuthorDashboard() {
               <h2 className="mb-4">Dashboard</h2>
               <ul className="nav flex-column">
                 <li className="nav-item" data-bs-toggle="modal" data-bs-target="#exampleModal1">
-                  <a className="nav-link text-white" onClick={getAuthorBlogs} style={{ cursor: 'pointer' }}>📜 Blogs</a>
+                  <a className="nav-link text-white" style={{ cursor: 'pointer' }}>📜 Blogs</a>
                 </li>
                 <li className="nav-item" data-bs-toggle="modal" data-bs-target="#exampleModal">
                   <div className="nav-link text-white" style={{ cursor: 'pointer' }}>📝 New Blog</div>
@@ -138,7 +148,7 @@ export default function AuthorDashboard() {
                                     <div className="card-body">
                                       <h5 className="card-title">{blog.title}</h5>
                                       <div className="d-flex justify-content-between">
-                                        <button className="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                                        <button className="btn btn-warning" data-bs-dismiss="modal" onClick={() => router.push(`/dashboard/${blog._id}`)}>
                                           Edit
                                         </button>
                                         <button className="btn btn-danger" onClick={() => handleDelete(blog._id)}>
@@ -153,54 +163,6 @@ export default function AuthorDashboard() {
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="modal fade" id="exampleModal2" tabIndex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
-              <div className="modal-dialog modal-dialog-scrollable">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="exampleModalLabel2">Edit Blog</h1>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="container">
-                      <form className="shadow p-4 rounded bg-light">
-                        <div className="mb-3">
-                          <label className="form-label">Blog Image</label>
-                          <input type="file" className="form-control" accept="image/*" />
-                          {image && <img src='https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/1015f/MainBefore.jpg' alt="Preview" className="img-fluid mt-2 w-100" style={{ maxHeight: "200px" }} />}
-                        </div>
-
-                        <div className="mb-3">
-                          <label className="form-label">Title</label>
-                          <input type="text" className="form-control" />
-                        </div>
-
-                        <div className="mb-3">
-                          <label className="form-label">Content</label>
-                          <textarea className="form-control" rows="5"></textarea>
-                        </div>
-
-                        <div className="mb-3">
-                          <label className="form-label">Category</label>
-                          <select className="form-select">
-                            <option value="Technology">Technology</option>
-                            <option value="Productivity">Productivity</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Health">Health</option>
-                            <option value="Travel">Travel</option>
-                          </select>
-                        </div>
-
-                        <button type="submit" className="btn btn-primary w-100">Update</button>
-                      </form>
                     </div>
                   </div>
                   <div className="modal-footer">
@@ -283,8 +245,8 @@ export default function AuthorDashboard() {
               <div className="row g-3">
                 {[
                   { title: "Total Posts", value: blogs.length },
-                  { title: "Total Likes", value: author.totalLikes },
-                  { title: "Total Comments", value: author.totalComments },
+                  { title: "Total Likes", value: totalLikes },
+                  { title: "Total Comments", value: totalComments },
                 ].map((stat, index) => (
                   <div className="col-6 col-md-4" key={index}>
                     <div className="card p-3 text-center shadow-sm">
