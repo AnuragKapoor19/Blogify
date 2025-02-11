@@ -3,6 +3,7 @@
 import BlogCard from "@/components/BlogCard"
 import Footer from "@/components/Footer";
 import Header from "@/components/Header"
+import Pagination from "@/components/Pagination";
 import { useContextState } from "@/contextApi";
 import axios from "axios"
 import { useEffect, useState } from "react"
@@ -70,6 +71,7 @@ function Home() {
           }
         </div>
       </div>
+      <Pagination pages={10} />
       <Footer />
     </>
   )

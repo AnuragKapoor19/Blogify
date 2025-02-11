@@ -34,7 +34,9 @@ const createBlog = async (req, res) => {
 
 const getAllBlogs = async (req, res) => {
     try {
-        let { search, category } = req.query;
+        let { search, category, page } = req.query;
+        const limit = 5;
+        const skip = limit * (page - 1);
         let filter = {}
 
         if (search) {
@@ -48,15 +50,19 @@ const getAllBlogs = async (req, res) => {
             filter.category = category
         }
 
-        let blogs;
+        // let blogs;
 
-        if (!search && !category) {
-            const totalCount = await Blog.countDocuments();
-            blogs = await Blog.aggregate([{ $sample: { size: totalCount } }]);
-        }
-        else {
-            blogs = await Blog.find(filter)
-        }
+        // if (!search && !category) {
+        //     const totalCount = await Blog.countDocuments();
+        //     blogs = await Blog.aggregate([{ $sample: { size: totalCount } }]);
+        // }
+        // else {
+        //     blogs = await Blog.find(filter)
+        // }
+
+        const blogs = await Blog.find(filter).skip(skip).limit(limit);
+
+        const totalBlogs = await (await Blog.find(filter)).length
 
         if (blogs.length <= 0) {
             return res.status(404).json({
@@ -67,7 +73,8 @@ const getAllBlogs = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            blogs
+            blogs,
+            totalPages: Math.ceil(totalBlogs / limit)
         })
 
     } catch (error) {
