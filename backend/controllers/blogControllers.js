@@ -35,7 +35,7 @@ const createBlog = async (req, res) => {
 const getAllBlogs = async (req, res) => {
     try {
         let { search, category, page } = req.query;
-        const limit = 5;
+        const limit = 6;
         const skip = limit * (page - 1);
         let filter = {}
 

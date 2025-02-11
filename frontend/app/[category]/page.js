@@ -3,11 +3,13 @@
 import BlogCard from "@/components/BlogCard";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header"
+import Pagination from "@/components/Pagination";
 import axios from "axios"
 import { useEffect, useState } from "react"
 
 export default function Blogs({ params }) {
     const [blogs, setblogs] = useState([])
+    const [totalPages, settotalPages] = useState();
     const [loading, setloading] = useState(true)
 
     const getBlogs = async () => {
@@ -20,6 +22,7 @@ export default function Blogs({ params }) {
             }
 
             setblogs(data.blogs)
+            settotalPages(data.totalPages)
             setloading(false)
         } catch (error) {
             console.log(error.message);
@@ -28,7 +31,7 @@ export default function Blogs({ params }) {
 
     useEffect(() => {
         getBlogs();
-    }, [])
+    }, [totalPages])
 
     return (
         <>
@@ -46,6 +49,7 @@ export default function Blogs({ params }) {
                     }
                 </div>
             </div>
+            <Pagination pages={totalPages} />
             <Footer />
         </>
     )

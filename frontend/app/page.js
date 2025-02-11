@@ -11,12 +11,13 @@ import { useEffect, useState } from "react"
 function Home() {
   const [blogs, setblogs] = useState([]);
   const [loading, setloading] = useState(true);
-  const { setUser, setAuthenticated, search } = useContextState();
+  const [totalPages, settotalPages] = useState();
+  const { setUser, setAuthenticated, search, currentPage } = useContextState();
 
   const getBlogs = async () => {
     try {
       const { data } = await axios.get(`http://localhost:5000/api/v1/blogs`, {
-        params: { search }
+        params: { search, page: currentPage }
       })
 
       if (!data.success) {
@@ -24,6 +25,7 @@ function Home() {
       }
 
       setblogs(data.blogs)
+      settotalPages(data.totalPages)
       setloading(false)
 
 
@@ -49,7 +51,7 @@ function Home() {
 
   useEffect(() => {
     getBlogs();
-  }, [search])
+  }, [search, currentPage])
 
   useEffect(() => {
     getUser();
@@ -71,7 +73,7 @@ function Home() {
           }
         </div>
       </div>
-      <Pagination pages={10} />
+      <Pagination pages={totalPages} />
       <Footer />
     </>
   )
