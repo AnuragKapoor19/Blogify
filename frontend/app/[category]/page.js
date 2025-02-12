@@ -11,6 +11,7 @@ export default function Blogs({ params }) {
     const [blogs, setblogs] = useState([])
     const [totalPages, settotalPages] = useState();
     const [loading, setloading] = useState(true)
+    const [cat, setcat] = useState('');
 
     const getBlogs = async () => {
         try {
@@ -21,6 +22,7 @@ export default function Blogs({ params }) {
                 return console.log(data.message);
             }
 
+            setcat(category)
             setblogs(data.blogs)
             settotalPages(data.totalPages)
             setloading(false)
@@ -37,17 +39,21 @@ export default function Blogs({ params }) {
         <>
             <Header />
             <div className="blogs-container m-4">
-                <h1 className="fw-bold">Blog</h1>
-                {/* <span className="fs-5">Discover the best of {category} with expert insights and trends.</span> */}
-                <div className="row card-container">
-                    {loading
-                        ? <h4>Loading...</h4>
-                        :
-                        blogs.map((blog, index) => (
-                            <BlogCard blog={blog} key={index} />
-                        ))
-                    }
-                </div>
+                <h3 style={{ fontFamily: 'cursive' }}>Insights & Inspiration</h3>
+                {loading
+                    ? <h4>Loading...</h4>
+                    :
+                    <>
+                        <span className="fs-5">Discover the best of {cat} with expert insights and trends.</span>
+                        <div className="row card-container">
+                            {
+                                blogs.map((blog, index) => (
+                                    <BlogCard blog={blog} key={index} />
+                                ))
+                            }
+                        </div>
+                    </>
+                }
             </div>
             <Pagination pages={totalPages} />
             <Footer />

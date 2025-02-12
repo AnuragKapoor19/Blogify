@@ -61,8 +61,8 @@ function Home() {
     <>
       <Header />
       <div className="blogs-container m-4">
-        <h1 className="fw-bold">Blog</h1>
-        <span className="fs-5">Here, we share travel tips, destination guides, and stories that inspire your next adventure.</span>
+        <h3 style={{fontFamily: 'cursive'}}>Insights & Inspiration</h3>
+        <span className="fs-5 fst-italic">Here, we share travel tips, destination guides, and stories that inspire your next adventure.</span>
         <div className="row card-container">
           {loading
             ? <h4>Loading...</h4>

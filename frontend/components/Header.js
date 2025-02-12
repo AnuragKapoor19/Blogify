@@ -28,7 +28,7 @@ export default function Header() {
       <div className='header-container'>
         <nav className="navbar navbar-expand-lg navbar-dark fs-4 fw-bolder">
           <div className="container-fluid">
-            <h1 className="navbar-brand fst-italic fw-bolder text-danger">Blogify</h1>
+            <span className="navbar-brand text-warning fs-4">𝓑𝓵𝓸𝓰𝓲𝓯𝔂</span>
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <span className="navbar-toggler-icon"></span>
             </button>
@@ -61,7 +61,7 @@ export default function Header() {
                 ?
                 <>
                   <div className='profile d-flex align-items-center text-light' data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    <img src={user.avatar.url} alt='avatar' height={50} width={50} style={{ border: '2px solid white', borderRadius: '50%' }} />
+                    <img src={user.avatar.url} alt='avatar' height={50} width={50} style={{ border: '1px solid white', borderRadius: '50%' }} />
                     <div className='d-flex flex-column'>
                       <span className='fs-5 fst-italic'>Hi,</span>
                       <h4>{String(user.name).split(' ')[0].charAt(0).toUpperCase() + String(user.name).split(' ')[0].slice(1)}</h4>

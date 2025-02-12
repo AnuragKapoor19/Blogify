@@ -1,5 +1,5 @@
 .header-container {
-    height: 60vh;
+    height: 50vh;
     background-image: url('https://plus.unsplash.com/premium_photo-1661265944044-bc7248ae54f9?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YmxvZyUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D');
     background-size: cover;
     background-position: center;
@@ -46,6 +46,18 @@
 @media screen and (max-width: 768px) {
     .h-custom {
         min-height: 100%;
+    }
+
+    .navbar{
+        background-color: rgba(0, 0, 0, 0.501);
+    }
+
+    .navbar-nav{
+        width: fit-content;
+    }
+
+    .header-container{
+        height: 63vh;
     }
 }
 
