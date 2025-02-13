@@ -6,12 +6,15 @@ import Footer from '@/components/Footer';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { FcLike, FcLikePlaceholder } from "react-icons/fc";
+import { useRouter } from 'next/navigation';
 
 export default function BlogPage({ params }) {
     const [blog, setBlog] = useState();
     const [loading, setLoading] = useState(true);
-    const [liked, setliked] = useState(false)
+    const [liked, setliked] = useState(false);
     const [newComment, setNewComment] = useState('');
+    const [relatedBlogs, setrelatedBlogs] = useState();
+    const router = useRouter();
 
     const getBlog = async () => {
         const { id } = await params;
@@ -22,9 +25,27 @@ export default function BlogPage({ params }) {
             return console.log(data.message);
         }
 
-        setBlog(data.blog);
+        await setBlog(data.blog);
+
+        await getRelatedBlogs(data.blog.category);
+
         setLoading(false);
     };
+
+    const getRelatedBlogs = async (category) => {
+        try {
+            const { id } = await params;
+            const { data } = await axios.get(`http://localhost:5000/api/v1/related/blogs/?blogId=${id}&category=${category}`);
+
+            if (!data.success) {
+                return console.log(data.message);
+            }
+
+            setrelatedBlogs(data.blogs);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
 
     useEffect(() => {
         getBlog();
@@ -64,6 +85,10 @@ export default function BlogPage({ params }) {
             console.log(error.message);
         }
     };
+
+    const handleRelatedBlogClick = (id) => {
+        router.push(`/blog/${id}`);
+    }
 
     return (
         <>
@@ -134,18 +159,14 @@ export default function BlogPage({ params }) {
                     <div className="mt-5 text-center">
                         <h3>Related Posts</h3>
                         <div className="row justify-content-center">
-                            <div className="col-md-4">
-                                <div className="card p-4 shadow-sm border-0">
-                                    <h5>Understanding React Server Components</h5>
-                                    <p className="text-muted">By Jane Smith</p>
+                            {relatedBlogs.map((item, index) => (
+                                <div key={index} className="col-md-4">
+                                    <div className="card p-4 shadow-sm border-0" onClick={() => handleRelatedBlogClick(item._id)} style={{cursor: 'pointer'}}>
+                                        <h5>{String(item.title).slice(0, 30)}...</h5>
+                                        <p className="text-muted">By {item.author.name}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-md-4">
-                                <div className="card p-4 shadow-sm border-0">
-                                    <h5>How Next.js Improves Performance</h5>
-                                    <p className="text-muted">By Alex Brown</p>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>

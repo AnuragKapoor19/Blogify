@@ -85,6 +85,33 @@ const getAllBlogs = async (req, res) => {
     }
 }
 
+const getRelatedBlogs = async (req, res) => {
+    try {
+        let blogs = await Blog.aggregate([
+            {
+                $match: {
+                    category: req.query.category,
+                    _id: { $ne: req.query.blogId }
+                }
+            },
+            { $sample: { size: 2 } } // Randomly select 2 blogs
+        ]);
+
+        // Convert to Mongoose models and populate
+        blogs = await Blog.populate(blogs, { path: "author", select: "name" });
+
+        res.status(200).json({
+            success: true,
+            blogs
+        })
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 const getBlog = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id).populate("author", "name").populate("comments.user", "name avatar")
@@ -311,4 +338,4 @@ const updateBlog = async (req, res) => {
     }
 }
 
-module.exports = { createBlog, getAllBlogs, getBlog, deleteBlog, addComment, addLike, removeLike, getAuthorBlogs, updateBlog }
+module.exports = { createBlog, getAllBlogs, getBlog, deleteBlog, addComment, addLike, removeLike, getAuthorBlogs, updateBlog, getRelatedBlogs }

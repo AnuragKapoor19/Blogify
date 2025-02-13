@@ -1,5 +1,5 @@
 const express = require('express')
-const { createBlog, getAllBlogs, getBlog, deleteBlog, addComment, addLike, removeLike, getAuthorBlogs, updateBlog } = require('../controllers/blogControllers')
+const { createBlog, getAllBlogs, getBlog, deleteBlog, addComment, addLike, removeLike, getAuthorBlogs, updateBlog, getRelatedBlogs } = require('../controllers/blogControllers')
 const router = express.Router()
 const authenticate = require('../middlewares/authentication')
 const authorize = require('../middlewares/authorization')
@@ -9,6 +9,8 @@ router.post('/new/blog', authenticate, authorize('author'), createBlog)
 router.get('/blogs', getAllBlogs)
 
 router.get('/blog/:id', getBlog)
+
+router.get('/related/blogs', getRelatedBlogs)
 
 router.delete('/blog/:id', authenticate, authorize('author'), deleteBlog)
 
