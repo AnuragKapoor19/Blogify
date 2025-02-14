@@ -135,7 +135,7 @@ export default function AuthorDashboard() {
                   <div className="modal-body">
                     <div className="container mt-5">
                       <div className="card p-4 shadow-sm">
-                        <h2 className="mb-4">Your Blogs</h2>
+                        <h2 className="mb-4">My Blogs</h2>
                         <div className="container mt-4">
                           <div className="row">
                             {loading
